@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WriterDNA — 蒸馏你的写作风格</title>
+<style>
+  :root {
+    --bg: #0a0a0b;
+    --surface: #141416;
+    --surface2: #1c1c1f;
+    --border: #2a2a2e;
+    --text: #e4e4e7;
+    --text2: #a1a1aa;
+    --text3: #71717a;
+    --accent: #22d3ee;
+    --accent2: #06b6d4;
+    --accent-dim: rgba(34,211,238,0.08);
+    --accent-dim2: rgba(34,211,238,0.04);
+    --green: #4ade80;
+    --amber: #fbbf24;
+    --rose: #fb7185;
+    --purple: #a78bfa;
+    --mono: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Nav */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    backdrop-filter: blur(20px);
+    background: rgba(10,10,11,0.8);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-brand {
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .nav-brand span { color: var(--accent); }
+  .nav-links { display: flex; gap: 1.5rem; }
+  .nav-links a {
+    font-size: 0.85rem;
+    color: var(--text2);
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); text-decoration: none; }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -20%; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, var(--accent-dim) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    background: var(--accent-dim);
+    border: 1px solid rgba(34,211,238,0.15);
+    padding: 0.25rem 0.75rem;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05em;
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+  .hero h1 .dim { color: var(--text3); }
+  .hero p {
+    font-size: 1.15rem;
+    color: var(--text2);
+    max-width: 540px;
+    margin-bottom: 2.5rem;
+  }
+  .hero p em {
+    color: var(--accent);
+    font-style: normal;
+    border-bottom: 1px solid rgba(34,211,238,0.3);
+  }
+  .hero-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; }
+  .btn {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .btn:hover { border-color: var(--text3); background: var(--surface2); text-decoration: none; }
+  .btn-primary {
+    background: var(--accent);
+    color: #0a0a0b;
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+  .btn-primary:hover { background: var(--accent2); border-color: var(--accent2); }
+
+  /* Sections */
+  section { padding: 5rem 2rem; max-width: 960px; margin: 0 auto; }
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+  .section-desc {
+    color: var(--text2);
+    font-size: 1rem;
+    max-width: 600px;
+    margin-bottom: 3rem;
+  }
+
+  /* Pipeline */
+  .pipeline {
+    display: flex; gap: 1px;
+    background: var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 3rem;
+  }
+  .pipeline-step {
+    flex: 1;
+    background: var(--surface);
+    padding: 1.5rem;
+    text-align: center;
+  }
+  .pipeline-step .num {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text3);
+    margin-bottom: 0.5rem;
+  }
+  .pipeline-step h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .pipeline-step p {
+    font-size: 0.8rem;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+  .pipeline-step .icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .pipeline-arrow {
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface);
+    padding: 0 0.25rem;
+    color: var(--text3);
+    font-family: var(--mono);
+    font-size: 0.8rem;
+  }
+
+  /* Three Concepts */
+  .concepts { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+  .concept-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: border-color 0.2s;
+  }
+  .concept-card:hover { border-color: var(--text3); }
+  .concept-card .label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text3);
+    margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .concept-card h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .concept-card p {
+    font-size: 0.85rem;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+  .concept-card .ref {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text3);
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Why / Advantages */
+  .advantages { display: flex; flex-direction: column; gap: 1.5rem; }
+  .advantage-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.75rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.25rem;
+    align-items: start;
+    transition: border-color 0.2s;
+  }
+  .advantage-card:hover { border-color: var(--text3); }
+  .advantage-icon {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .advantage-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+  }
+  .advantage-card p {
+    font-size: 0.85rem;
+    color: var(--text2);
+    line-height: 1.65;
+  }
+  .advantage-card .detail {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text3);
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border);
+    line-height: 1.6;
+  }
+  .advantage-card .detail code {
+    background: var(--surface2);
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    color: var(--text2);
+  }
+
+  /* Structure */
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .tree .dir { color: var(--accent); }
+  .tree .file { color: var(--text2); }
+  .tree .comment { color: var(--text3); }
+
+  /* Divider */
+  .divider {
+    max-width: 960px;
+    margin: 0 auto;
+    border: none;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    font-size: 0.8rem;
+    color: var(--text3);
+  }
+  footer a { color: var(--text2); }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .pipeline { flex-direction: column; }
+    .pipeline-arrow { transform: rotate(90deg); padding: 0.25rem 0; }
+    .nav-links { display: none; }
+    section { padding: 3rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Writer<span>DNA</span></div>
+  <div class="nav-links">
+    <a href="#what">What</a>
+    <a href="#how">How</a>
+    <a href="#concepts">Concepts</a>
+    <a href="#why">Why</a>
+    <a href="#structure">Structure</a>
+    <a href="https://github.com/liangjfblue/writer-dna" target="_blank">GitHub</a>
+    <a href="https://gitee.com/aiami/writer-dna" target="_blank">Gitee</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-tag">Writing Style Distillation</div>
+  <h1>蒸馏你的写作风格<br><span class="dim">生成你的 AI 写作 Skill</span></h1>
+  <p>把你的文章、聊天记录、喜欢的作者扔进去。WriterDNA 分析你的风格基因，注入经过验证的骨架模板，生成一个<em>专属于你的</em> Claude Code 写作 Skill。</p>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="#how">开始使用</a>
+    <a class="btn" href="https://github.com/liangjfblue/writer-dna" target="_blank">GitHub ↗</a>
+    <a class="btn" href="https://gitee.com/aiami/writer-dna" target="_blank">Gitee ↗</a>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="what">
+  <div class="section-label">01 — What</div>
+  <h2 class="section-title">它是什么，不是什么</h2>
+  <div class="section-desc">三个"是"和三个"不是"。</div>
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:1.5rem;">
+      <div style="font-family:var(--mono); font-size:0.7rem; color:var(--green); margin-bottom:0.75rem;">是 ✓</div>
+      <ul style="font-size:0.85rem; color:var(--text2); list-style:none; display:flex; flex-direction:column; gap:0.5rem;">
+        <li>写作风格蒸馏工具</li>
+        <li>输出可安装的 Claude Code Skill</li>
+        <li>每个输出都独一无二</li>
+      </ul>
+    </div>
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:1.5rem;">
+      <div style="font-family:var(--mono); font-size:0.7rem; color:var(--rose); margin-bottom:0.75rem;">不是 ✗</div>
+      <ul style="font-size:0.85rem; color:var(--text2); list-style:none; display:flex; flex-direction:column; gap:0.5rem;">
+        <li>AI 写作工具（它生成 Skill，Skill 才写作）</li>
+        <li>通用写作模板（从你的素材中提取）</li>
+        <li>风格分析报告（直接产出可执行的 Skill）</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="how">
+  <div class="section-label">02 — How</div>
+  <h2 class="section-title">三步蒸馏</h2>
+  <div class="section-desc">从原始素材到个人写作 Skill 的完整流水线。</div>
+
+  <div class="pipeline">
+    <div class="pipeline-step">
+      <div class="icon">📥</div>
+      <div class="num">STEP 01</div>
+      <h3>放入素材</h3>
+      <p>你的文章、聊天记录、喜欢的作者、访谈稿——放进来就好</p>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">
+      <div class="icon">🧬</div>
+      <div class="num">STEP 02</div>
+      <h3>风格分析</h3>
+      <p>双轨分析：人格轨（你是谁）+ 技法轨（你怎么写），生成结构化知识库</p>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">
+      <div class="icon">⚡</div>
+      <div class="num">STEP 03</div>
+      <h3>生成 Skill</h3>
+      <p>风格注入骨架模板，产出可安装的个人写作 Skill + 五层自检体系</p>
+    </div>
+  </div>
+
+  <div style="font-family:var(--mono); font-size:0.8rem; color:var(--text3); text-align:center;">
+    框架是 khazix 的，灵魂是你自己的。
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="concepts">
+  <div class="section-label">03 — Concepts</div>
+  <h2 class="section-title">三个概念的融合</h2>
+  <div class="section-desc">WriterDNA 是 Karpathy 式极简知识库、卡兹克式 Skill 架构、和蒸馏范式的结合体。</div>
+
+  <div class="concepts">
+    <div class="concept-card">
+      <div class="label" style="color:var(--accent);">● 知识库</div>
+      <h3>Karpathy 式知识库</h3>
+      <p>像 Karpathy 把 LLM 知识拆解成结构化、可理解、可学习的模块一样，WriterDNA 把写作风格拆解成可查询、可迭代的知识库。</p>
+      <div class="ref">人格轨：核心价值观、语气节奏<br>技法轨：词库、技法、自检规则</div>
+    </div>
+    <div class="concept-card">
+      <div class="label" style="color:var(--green);">● Skill</div>
+      <h3>卡兹克式输出</h3>
+      <p>最终产出是一个符合 Agent Skills 开放标准的写作 Skill，包含风格内核 + 五层自检体系。</p>
+      <div class="ref">SKILL.md + references/ + scenes/<br>安装即用，对 Claude 说"帮我写"</div>
+    </div>
+    <div class="concept-card">
+      <div class="label" style="color:var(--purple);">● 蒸馏</div>
+      <h3>Distill 范式</h3>
+      <p>从原始素材中"蒸馏"出风格基因，注入骨架模板。写作中持续纠错，风格越来越像你。</p>
+      <div class="ref">情况 A：提取自己的风格<br>情况 B：学习目标作者的风格</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="why">
+  <div class="section-label">04 — Why</div>
+  <h2 class="section-title">为什么不是直接写个 Prompt</h2>
+  <div class="section-desc">五个让 WriterDNA 不只是"又一套写作模板"的设计决策。</div>
+
+  <div class="advantages">
+    <div class="advantage-card">
+      <div class="advantage-icon" style="background:var(--accent-dim); color:var(--accent);">⬡</div>
+      <div>
+        <h3>双层架构</h3>
+        <p>骨架模板（写作框架）和风格数据（你的风格基因）分离，两层独立迭代。换骨架不需要重新分析风格，更新风格不需要改骨架。</p>
+      </div>
+    </div>
+
+    <div class="advantage-card">
+      <div class="advantage-icon" style="background:rgba(74,222,128,0.08); color:var(--green);">⊞</div>
+      <div>
+        <h3>插件化场景</h3>
+        <p>每种文章原型是独立插件，包含专属的开头模式、结构模板和收尾方式。新增类型零侵入，核心 SKILL.md 不动。</p>
+      </div>
+    </div>
+
+    <div class="advantage-card">
+      <div class="advantage-icon" style="background:rgba(251,191,36,0.08); color:var(--amber);">◎</div>
+      <div>
+        <h3>五层渐进式自检</h3>
+        <p>L1 硬规则（零容忍）→ L2 风格 → L3 质量 → L4 活人感 → L5 运行时纠错。L5 是杀手级功能：写作中说"这句不像我"，自动记录，优先级高于 L1。</p>
+      </div>
+    </div>
+
+    <div class="advantage-card">
+      <div class="advantage-icon" style="background:rgba(167,139,250,0.08); color:var(--purple);">⇄</div>
+      <div>
+        <h3>双用户类型适配</h3>
+        <p>有经验写作者提取自己的风格（[CONFIRMED]），纯新手从喜欢的作者学习（[LEARNED]），同一套系统，随用户成长自动过渡。</p>
+      </div>
+    </div>
+
+    <div class="advantage-card">
+      <div class="advantage-icon" style="background:rgba(251,113,133,0.08); color:var(--rose);">◈</div>
+      <div>
+        <h3>可追溯的风格知识库</h3>
+        <p>wiki/ 不是黑盒。每个技法有证据标签，补充素材后增量更新，随时可审可调。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="structure">
+  <div class="section-label">04 — Structure</div>
+  <h2 class="section-title">项目结构</h2>
+  <div class="section-desc">干净的四层架构：规则 → 模板 → 素材 → 产出。</div>
+
+  <div class="tree">
+<span class="dir">writer-dna/</span>
+├── <span class="file">CLAUDE.md</span>              <span class="comment">← 蒸馏引擎（AI 指令）</span>
+├── <span class="dir">templates/</span>             <span class="comment">← 骨架模板（风格无关的写作框架）</span>
+│   └── <span class="dir">khazix-writer/</span>
+│       ├── <span class="file">SKILL.md</span>
+│       └── <span class="dir">references/</span>
+├── <span class="dir">raw/</span>                   <span class="comment">← 你的原始素材（AI 只读不改）</span>
+│   ├── <span class="file">profile.md</span>
+│   ├── <span class="dir">articles/</span>
+│   ├── <span class="dir">chats/</span>
+│   ├── <span class="dir">references/</span>
+│   └── <span class="dir">interviews/</span>
+├── <span class="dir">wiki/</span>                  <span class="comment">← 风格知识库（AI 分析生成）</span>
+│   ├── <span class="dir">persona/</span>           <span class="comment">   ← 人格轨</span>
+│   └── <span class="dir">craft/</span>             <span class="comment">   ← 技法轨</span>
+└── <span class="dir">outputs/</span>               <span class="comment">← 生成的 Skill 包</span>
+    └── <span class="dir">&lt;your-name&gt;-writer/</span>
+        ├── <span class="file">SKILL.md</span>
+        └── <span class="dir">references/</span>
+            ├── <span class="file">style_examples.md</span>
+            ├── <span class="file">content_methodology.md</span>
+            └── <span class="dir">scenes/</span>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section>
+  <div class="section-label">05 — Thanks</div>
+  <h2 class="section-title">致谢</h2>
+  <div class="section-desc" style="margin-bottom:0;">
+    <a href="https://github.com/KKKKhazix/Khazix-Skills">数字生命卡兹克</a> — 骨架模板和五层自检体系<br>
+    <a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f">Karpathy</a> — LLM 知识库方法论<br>
+    万维钢 — 风格参考标杆
+  </div>
+</section>
+
+<footer>
+  WriterDNA · 框架是 khazix 的，灵魂是你自己的
+</footer>
+
+</body>
+</html>

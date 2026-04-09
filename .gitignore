@@ -1,0 +1,23 @@
+# User materials - do not commit
+raw/chats/*
+raw/articles/*
+raw/references/*
+raw/interviews/*
+!raw/**/.gitkeep
+raw/profile.md
+
+# Generated outputs - do not commit
+outputs/*
+!outputs/.gitkeep
+
+# AI-generated wiki - user may want to keep
+wiki/*
+!wiki/.gitkeep
+
+docs
+
+*.png
+
+.claude/settings.local.json
+
+.DS_Store
