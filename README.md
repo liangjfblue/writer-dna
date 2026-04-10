@@ -2,6 +2,8 @@
 
 ![](https://ljf-write.oss-cn-hangzhou.aliyuncs.com/pageIndex.png)
 
+**[WriterDNA 官网](http://writer-dna.tasai.top)** · [GitHub](https://github.com/liangjfblue/writer-dna) · [Gitee](https://gitee.com/aiami/writer-dna)
+
 > 从你的原始素材中蒸馏出个人写作风格，生成专属于你的 AI 写作 Skill。
 
 **框架是 khazix 的，灵魂是你自己的。**

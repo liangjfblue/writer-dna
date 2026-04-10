@@ -314,12 +314,65 @@
   }
   footer a { color: var(--text2); }
 
+  /* Mobile Nav Toggle */
+  .nav-toggle {
+    display: none;
+    background: none; border: none;
+    color: var(--text2); cursor: pointer;
+    font-size: 1.2rem; padding: 0.25rem;
+  }
+  .nav-menu {
+    display: none;
+    position: fixed; top: 56px; left: 0; right: 0;
+    background: rgba(10,10,11,0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 1.25rem;
+    flex-direction: column; gap: 0.5rem;
+  }
+  .nav-menu.open { display: flex; }
+  .nav-menu a {
+    font-size: 0.85rem; color: var(--text2);
+    padding: 0.5rem 0; display: block;
+  }
+  .nav-menu a:hover { color: var(--text); text-decoration: none; }
+
+  /* What section grid */
+  .what-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+  }
+
   /* Responsive */
   @media (max-width: 640px) {
-    .pipeline { flex-direction: column; }
-    .pipeline-arrow { transform: rotate(90deg); padding: 0.25rem 0; }
+    nav { padding: 0 1rem; }
     .nav-links { display: none; }
+    .nav-toggle { display: block; }
+
+    .hero { padding: 5rem 1.25rem 3rem; }
+    .hero h1 { font-size: clamp(1.75rem, 8vw, 2.5rem); }
+    .hero p { font-size: 1rem; }
+    .hero::before { width: 300px; height: 300px; }
+
     section { padding: 3rem 1.25rem; }
+
+    .what-grid { grid-template-columns: 1fr; }
+
+    .pipeline { flex-direction: column; gap: 0; border-radius: 10px; }
+    .pipeline-arrow { display: none; }
+    .pipeline-step { padding: 1.25rem 1rem; border-bottom: 1px solid var(--border); }
+    .pipeline-step:last-child { border-bottom: none; }
+
+    .concepts { grid-template-columns: 1fr; }
+
+    .advantage-card {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+    .advantage-icon { width: 32px; height: 32px; font-size: 0.95rem; }
+
+    .tree { font-size: 0.7rem; padding: 1rem; }
+
+    .section-title { font-size: 1.35rem; }
   }
 </style>
 </head>
@@ -327,6 +380,7 @@
 
 <nav>
   <div class="nav-brand">Writer<span>DNA</span></div>
+  <button class="nav-toggle" onclick="document.querySelector('.nav-menu').classList.toggle('open')" aria-label="Menu">☰</button>
   <div class="nav-links">
     <a href="#what">What</a>
     <a href="#how">How</a>
@@ -337,6 +391,16 @@
     <a href="https://gitee.com/aiami/writer-dna" target="_blank">Gitee</a>
   </div>
 </nav>
+<div class="nav-menu" id="navMenu">
+  <a href="#what" onclick="closeNav()">What</a>
+  <a href="#how" onclick="closeNav()">How</a>
+  <a href="#concepts" onclick="closeNav()">Concepts</a>
+  <a href="#why" onclick="closeNav()">Why</a>
+  <a href="#structure" onclick="closeNav()">Structure</a>
+  <a href="https://github.com/liangjfblue/writer-dna" target="_blank">GitHub ↗</a>
+  <a href="https://gitee.com/aiami/writer-dna" target="_blank">Gitee ↗</a>
+</div>
+<script>function closeNav(){document.getElementById('navMenu').classList.remove('open')}</script>
 
 <section class="hero">
   <div class="hero-tag">Writing Style Distillation</div>
@@ -355,7 +419,7 @@
   <div class="section-label">01 — What</div>
   <h2 class="section-title">它是什么，不是什么</h2>
   <div class="section-desc">三个"是"和三个"不是"。</div>
-  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+  <div class="what-grid">
     <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:1.5rem;">
       <div style="font-family:var(--mono); font-size:0.7rem; color:var(--green); margin-bottom:0.75rem;">是 ✓</div>
       <ul style="font-size:0.85rem; color:var(--text2); list-style:none; display:flex; flex-direction:column; gap:0.5rem;">
